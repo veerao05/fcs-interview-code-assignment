@@ -438,7 +438,7 @@ A reconciliation process even with integration - trust but verify. Regular autom
 
 One thing I'd be cautious about - don't try to build the perfect integration on day one. Start with the most critical data flows, get those working reliably, then expand. It's better to have a simple, reliable integration for core cost data than a complex, fragile integration trying to sync everything.
 
-## Scenario 4: Budgeting and Forecasting
+[## Scenario 4: Budgeting and Forecasting
 **Situation**: The company needs to develop budgeting and forecasting capabilities for its fulfillment operations. The goal is to predict future costs and allocate resources effectively.
 
 **Task**: Discuss the importance of budgeting and forecasting in fulfillment operations and what would you take into account designing a system to support accurate budgeting and forecasting?
@@ -505,14 +505,80 @@ The system should make it easy to do sensitivity analysis - "if volume is 10% hi
 And importantly, the forecast needs to tie back to the cost tracking system. If we forecast $5M in labor costs but the tracking system shows we're running at $6M halfway through the period, that's a red flag that needs attention.
 
 I'd also keep it simple initially. A spreadsheet-based model with clear assumptions is better than a complex black-box system nobody understands. You can always sophisticate it later as you learn what works.
-
+]()
 ## Scenario 5: Cost Control in Warehouse Replacement
 **Situation**: The company is planning to replace an existing Warehouse with a new one. The new Warehouse will reuse the Business Unit Code of the old Warehouse. The old Warehouse will be archived, but its cost history must be preserved.
 
 **Task**: Discuss the cost control aspects of replacing a Warehouse. Why is it important to preserve cost history and how this relates to keeping the new Warehouse operation within budget?
 
 **Questions you may have and considerations:**
-[ fill here your answer ]
+
+Preserving cost history during a warehouse replacement is really important, and the fact that they're reusing the Business Unit Code makes this even more critical. If you just wipe out the old data and start fresh, you lose a ton of valuable context.
+
+Here's why the cost history matters:
+
+**Baseline for budgeting the new warehouse** - When you're setting up a new warehouse, you need some basis for budgeting its costs. The old warehouse's cost history gives you that baseline. You can look at what it cost to run the old facility per unit shipped, per square foot, labor costs per order, etc., and use that to estimate the new warehouse's budget. Without that historical context, you're just guessing.
+
+Obviously the new warehouse won't be identical - maybe it's bigger, in a different location, has better automation - but the old data gives you a starting point. You can adjust up or down based on what's different about the new facility.
+
+**Trend analysis and forecasting** - If you look at just the new warehouse's costs in isolation, you lose visibility into long-term trends. Say costs were gradually decreasing over the past two years due to efficiency improvements. If you archive the old data without preserving that trend, you can't tell if the new warehouse is continuing that improvement or regressing.
+
+Same thing for seasonal patterns. Fulfillment costs typically spike during peak season. If you only have a few months of data from the new warehouse, you might not have gone through a full seasonal cycle yet. The old warehouse's seasonal patterns help forecast what to expect.
+
+**Performance comparison** - This is a big one. When you replace a warehouse, there's usually a reason - maybe the old one was too small, inefficient, poorly located, or just outdated. The new warehouse is supposed to be better. But how do you know if it's actually performing better without the old data to compare against?
+
+If the old warehouse cost $5 per order and the new one costs $6 per order, is that a problem? Well, it depends. Maybe the new warehouse is processing way more volume, or handling more complex orders. You need the historical context to make that judgment.
+
+**Learning from past performance** - The old warehouse's cost history contains lessons. Where did costs run over budget? What were the main cost drivers? What efficiency initiatives worked or didn't work? If you lose that history, you risk repeating the same mistakes in the new facility.
+
+For example, if labor costs consistently exceeded budget in the old warehouse during peak season because staffing models were wrong, you want to apply that lesson when planning the new warehouse's peak season staffing.
+
+**Financial reporting and auditing** - From an accounting perspective, you need to maintain historical records. If someone asks "what were our total fulfillment costs for FY2023?" you need to be able to answer that, even if the warehouse from 2023 doesn't exist anymore. Can't just say "we deleted that data when we closed the warehouse."
+
+Also, if there are any disputes, chargebacks, or audits related to past periods, you need that cost data available.
+
+**Store cost allocation continuity** - If stores were being charged for fulfillment costs based on which warehouse served them, those stores have history with the old warehouse. When you transition to the new warehouse, stores will want to understand if their costs are going up or down and why. You can't provide that context without the old warehouse's data.
+
+Now, the fact that they're reusing the Business Unit Code is interesting. This creates a data modeling challenge. You need to be able to distinguish between:
+- Costs from the old warehouse (archived but still accessible)
+- Costs from the new warehouse (current operations)
+- Possibly transition costs (if there's an overlap period where both are operating)
+
+But you also want reporting continuity. If someone looks at costs by Business Unit Code over the past three years, they should see a continuous story, not a gap where the warehouse changed.
+
+Questions I'd want to ask:
+
+- Why are we reusing the Business Unit Code instead of creating a new one? Is it because stores and other systems are tied to that code?
+- Will there be any overlap period where both warehouses are operating? How do we track costs during that transition?
+- What's the expected cost impact of the replacement? Should the new warehouse be more or less expensive to operate?
+- Are we moving to a different geography? Different cost structure (labor rates, rent, etc.)?
+- What improvements are we expecting from the new warehouse that should drive cost benefits?
+- How long should we keep the old warehouse's cost history accessible? Forever, or just a certain number of years?
+- For reporting purposes, should we show old and new warehouse costs separately, or aggregate them under the Business Unit Code?
+- Are there any one-time transition costs (moving, overlap rent, training in new facility) that should be tracked separately?
+- What happens to in-flight costs? Like, inventory was moved from old to new warehouse - how do we allocate those handling costs?
+
+From a cost control standpoint during the transition:
+
+**Set clear budget targets for the new warehouse** - Based on the old warehouse's performance, set explicit cost targets for the new one. Maybe it's "10% lower cost per unit due to better automation" or "15% higher cost per unit initially due to ramp-up, but reaching parity within 6 months." Without clear targets, you can't tell if things are on track.
+
+**Track transition costs separately** - Don't mix up one-time transition costs with ongoing operational costs. Moving inventory, training staff, running two facilities in parallel, fixing startup issues - these are all temporary costs. If you blend them with regular operations costs, you'll get a distorted picture of the new warehouse's true operating costs.
+
+**Monitor cost trends closely during ramp-up** - New warehouses typically have higher costs initially due to learning curves, inefficiencies, and getting processes dialed in. But you want to see those costs trending toward the budget targets. If costs are staying high or getting worse after 3-6 months, that's a red flag.
+
+**Preserve detailed cost breakdowns** - Don't just keep aggregate totals. Preserve the detailed breakdown of labor, transportation, overhead, etc. from the old warehouse. This lets you do meaningful comparisons at the cost category level.
+
+From a system design perspective:
+
+The data model needs to support this scenario cleanly. I'd probably have:
+- A Warehouse entity with an active/archived status flag
+- Warehouse cost records that reference the warehouse and timestamp
+- Business Unit Code as a separate concept that can be associated with multiple warehouses over time
+- Ability to query costs by Business Unit Code (shows all warehouses under that code) or by specific warehouse
+
+Reports should be able to show historical trends across the warehouse replacement - like a line chart of costs over three years where there's a visual indicator "old warehouse" vs "new warehouse" but the line is continuous.
+
+One thing to watch out for - make sure you don't accidentally aggregate old and new warehouse costs in ways that create confusion. Like, if someone asks "what was average cost per unit in the new warehouse last month?" you don't want to accidentally include old warehouse data in that calculation just because they share a Business Unit Code.
 
 ## Instructions for Candidates
 Before starting the case study, read the [BRIEFING.md](BRIEFING.md) to quickly understand the domain, entities, business rules, and other relevant details.
