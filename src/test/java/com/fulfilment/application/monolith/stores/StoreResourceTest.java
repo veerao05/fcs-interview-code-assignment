@@ -94,6 +94,7 @@ public class StoreResourceTest {
      * - Legacy gateway is called AFTER transaction commits with updated entity
      */
     @Test
+    @Transactional
     @DisplayName("PUT /store/{id} - Successfully update store and sync to legacy system after commit")
     public void testUpdateStore_ValidData_ShouldSucceedAndCallLegacyGatewayAfterCommit() {
         // given - create a store first
@@ -134,6 +135,7 @@ public class StoreResourceTest {
      * - Legacy gateway is called AFTER transaction commits
      */
     @Test
+    @Transactional
     @DisplayName("PATCH /store/{id} - Successfully patch store and sync to legacy system after commit")
     public void testPatchStore_ValidData_ShouldSucceedAndCallLegacyGatewayAfterCommit() {
         // given - create a store first
@@ -169,6 +171,7 @@ public class StoreResourceTest {
      * - Response contains correct number of stores
      */
     @Test
+    @Transactional
     @DisplayName("GET /store - Successfully retrieve all stores sorted by name")
     public void testGetAllStores_MultipleStores_ShouldReturnSortedList() {
         // given
@@ -204,6 +207,7 @@ public class StoreResourceTest {
      * - Response contains correct store data
      */
     @Test
+    @Transactional
     @DisplayName("GET /store/{id} - Successfully retrieve single store by ID")
     public void testGetSingleStore_ExistingId_ShouldReturnStore() {
         // given
@@ -230,6 +234,7 @@ public class StoreResourceTest {
      * - Store no longer exists in database
      */
     @Test
+    @Transactional
     @DisplayName("DELETE /store/{id} - Successfully delete store")
     public void testDeleteStore_ExistingId_ShouldSucceed() {
         // given
@@ -416,6 +421,7 @@ public class StoreResourceTest {
      * - Validation error message is returned
      */
     @Test
+    @Transactional
     @DisplayName("PUT /store/{id} - Reject update without store name")
     public void testUpdateStore_MissingName_ShouldRejectAndNotCallLegacyGateway() {
         // given
@@ -450,6 +456,7 @@ public class StoreResourceTest {
      * - Legacy gateway is NOT called
      */
     @Test
+    @Transactional
     @DisplayName("PATCH /store/{id} - Reject patch without store name")
     public void testPatchStore_MissingName_ShouldRejectAndNotCallLegacyGateway() {
         // given

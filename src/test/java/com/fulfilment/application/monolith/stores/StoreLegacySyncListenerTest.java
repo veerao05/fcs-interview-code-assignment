@@ -9,6 +9,7 @@ import io.quarkus.test.InjectMock;
 import jakarta.enterprise.event.Event;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -36,6 +37,12 @@ public class StoreLegacySyncListenerTest {
 
     @InjectMock
     LegacyStoreManagerGateway legacyStoreManagerGateway;
+
+    @BeforeEach
+    @Transactional
+    public void cleanup() {
+        Store.deleteAll();
+    }
 
     // ==================== POSITIVE TEST CASES ====================
 
