@@ -307,7 +307,7 @@ public class StoreResourceTest {
             .body("error", is("Id was invalidly set on request."));
 
         // then - verify legacy gateway was NOT called because transaction failed
-        verify(legacyStoreManagerGateway, timeout(2000).never())
+        verify(legacyStoreManagerGateway, never())
             .createStoreOnLegacySystem(any(Store.class));
     }
 
@@ -337,7 +337,7 @@ public class StoreResourceTest {
             .body("error", is("Store with id of 99999 does not exist."));
 
         // then - verify legacy gateway was NOT called
-        verify(legacyStoreManagerGateway, timeout(2000).never())
+        verify(legacyStoreManagerGateway, never())
             .updateStoreOnLegacySystem(any(Store.class));
     }
 
@@ -365,7 +365,7 @@ public class StoreResourceTest {
             .statusCode(404);
 
         // then
-        verify(legacyStoreManagerGateway, timeout(2000).never())
+        verify(legacyStoreManagerGateway, never())
             .updateStoreOnLegacySystem(any(Store.class));
     }
 
@@ -438,7 +438,7 @@ public class StoreResourceTest {
             .body("error", is("Store Name was not set on request."));
 
         // then
-        verify(legacyStoreManagerGateway, timeout(2000).never())
+        verify(legacyStoreManagerGateway, never())
             .updateStoreOnLegacySystem(any(Store.class));
     }
 
@@ -471,7 +471,7 @@ public class StoreResourceTest {
             .statusCode(422);
 
         // then
-        verify(legacyStoreManagerGateway, timeout(2000).never())
+        verify(legacyStoreManagerGateway, never())
             .updateStoreOnLegacySystem(any(Store.class));
     }
 
@@ -516,7 +516,7 @@ public class StoreResourceTest {
             .then()
             .statusCode(400);
 
-        verify(legacyStoreManagerGateway, timeout(2000).never())
+        verify(legacyStoreManagerGateway, never())
             .createStoreOnLegacySystem(any(Store.class));
     }
 

@@ -86,10 +86,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 1500;
     newWarehouse.stock = 500;
 
-    Location location = new Location();
-    location.identification = "LA";
-    location.maxNumberOfWarehouses = 5;
-    location.maxCapacity = 10000;
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU001")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -138,8 +135,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 800;
     newWarehouse.stock = 0;
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU002")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -178,8 +174,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 750; // Exact match with old stock
     newWarehouse.stock = 750;
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU003")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -218,8 +213,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 800;
     newWarehouse.stock = 0; // Should match null (treated as 0)
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU004")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -378,8 +372,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 0;
     newWarehouse.stock = 0;
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU007")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -422,8 +415,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = null;
     newWarehouse.stock = 0;
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU008")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -466,8 +458,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 700; // Less than old stock of 800
     newWarehouse.stock = 800;
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU009")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -512,8 +503,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 1500;
     newWarehouse.stock = 600; // Does not match old stock of 500
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU010")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -557,8 +547,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 1500;
     newWarehouse.stock = null; // Treated as 0, doesn't match 500
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU011")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -602,8 +591,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = -100;
     newWarehouse.stock = 0;
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU012")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -645,8 +633,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 1200;
     newWarehouse.stock = 300;
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU_PRESERVE")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
@@ -692,8 +679,7 @@ class ReplaceWarehouseUseCaseTest {
     newWarehouse.capacity = 1100;
     newWarehouse.stock = 400;
 
-    Location location = new Location();
-    location.identification = "LA";
+    Location location = new Location("LA", 5, 10000);
 
     when(warehouseStore.findByBusinessUnitCode("BU013")).thenReturn(oldWarehouse);
     when(locationResolver.resolveByIdentifier("LA")).thenReturn(location);
