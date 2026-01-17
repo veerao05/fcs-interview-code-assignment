@@ -16,25 +16,45 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
 
   @Override
   public void create(Warehouse warehouse) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'create'");
+    DbWarehouse dbWarehouse = toDbWarehouse(warehouse);
+    persist(dbWarehouse);
   }
 
   @Override
   public void update(Warehouse warehouse) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'replace'");
+    DbWarehouse existing = find("businessUnitCode", warehouse.businessUnitCode).firstResult();
+    if (existing != null) {
+      existing.location = warehouse.location;
+      existing.capacity = warehouse.capacity;
+      existing.stock = warehouse.stock;
+      existing.createdAt = warehouse.createdAt;
+      existing.archivedAt = warehouse.archivedAt;
+      persist(existing);
+    }
   }
 
   @Override
   public void remove(Warehouse warehouse) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'remove'");
+    DbWarehouse existing = find("businessUnitCode", warehouse.businessUnitCode).firstResult();
+    if (existing != null) {
+      delete(existing);
+    }
   }
 
   @Override
   public Warehouse findByBusinessUnitCode(String buCode) {
-    // TODO Auto-generated method stub
-    throw new UnsupportedOperationException("Unimplemented method 'findById'");
+    DbWarehouse dbWarehouse = find("businessUnitCode", buCode).firstResult();
+    return dbWarehouse != null ? dbWarehouse.toWarehouse() : null;
+  }
+
+  private DbWarehouse toDbWarehouse(Warehouse warehouse) {
+    DbWarehouse dbWarehouse = new DbWarehouse();
+    dbWarehouse.businessUnitCode = warehouse.businessUnitCode;
+    dbWarehouse.location = warehouse.location;
+    dbWarehouse.capacity = warehouse.capacity;
+    dbWarehouse.stock = warehouse.stock;
+    dbWarehouse.createdAt = warehouse.createdAt;
+    dbWarehouse.archivedAt = warehouse.archivedAt;
+    return dbWarehouse;
   }
 }
