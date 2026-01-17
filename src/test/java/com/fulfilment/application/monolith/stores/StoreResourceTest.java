@@ -94,14 +94,22 @@ public class StoreResourceTest {
      * - Legacy gateway is called AFTER transaction commits with updated entity
      */
     @Test
-    @Transactional
     @DisplayName("PUT /store/{id} - Successfully update store and sync to legacy system after commit")
     public void testUpdateStore_ValidData_ShouldSucceedAndCallLegacyGatewayAfterCommit() {
-        // given - create a store first
-        Store store = new Store("Original Store");
-        store.quantityProductsInStock = 50;
-        store.persist();
-        Long storeId = store.id;
+        // given - create a store first via API
+        Store newStore = new Store("Original Store");
+        newStore.quantityProductsInStock = 50;
+
+        Long storeId = given()
+            .contentType(ContentType.JSON)
+            .body(newStore)
+            .when()
+            .post("/store")
+            .then()
+            .statusCode(201)
+            .extract()
+            .jsonPath()
+            .getLong("id");
 
         Store updatedStore = new Store("Updated Store Name");
         updatedStore.quantityProductsInStock = 75;
@@ -135,13 +143,22 @@ public class StoreResourceTest {
      * - Legacy gateway is called AFTER transaction commits
      */
     @Test
-    @Transactional
     @DisplayName("PATCH /store/{id} - Successfully patch store and sync to legacy system after commit")
     public void testPatchStore_ValidData_ShouldSucceedAndCallLegacyGatewayAfterCommit() {
-        // given - create a store first
-        Store store = new Store("Original Store");
-        store.quantityProductsInStock = 50;
-        store.persist();
+        // given - create a store first via API
+        Store newStore = new Store("Original Store");
+        newStore.quantityProductsInStock = 50;
+
+        Long storeId = given()
+            .contentType(ContentType.JSON)
+            .body(newStore)
+            .when()
+            .post("/store")
+            .then()
+            .statusCode(201)
+            .extract()
+            .jsonPath()
+            .getLong("id");
 
         Store patchedStore = new Store("Patched Store");
         patchedStore.quantityProductsInStock = 60;
@@ -151,7 +168,7 @@ public class StoreResourceTest {
             .contentType(ContentType.JSON)
             .body(patchedStore)
             .when()
-            .patch("/store/" + store.id)
+            .patch("/store/" + storeId)
             .then()
             .statusCode(200)
             .body("name", is("Patched Store"))
@@ -171,21 +188,38 @@ public class StoreResourceTest {
      * - Response contains correct number of stores
      */
     @Test
-    @Transactional
     @DisplayName("GET /store - Successfully retrieve all stores sorted by name")
     public void testGetAllStores_MultipleStores_ShouldReturnSortedList() {
-        // given
+        // given - create stores via API
         Store store1 = new Store("Zebra Store");
         store1.quantityProductsInStock = 10;
-        store1.persist();
+        given()
+            .contentType(ContentType.JSON)
+            .body(store1)
+            .when()
+            .post("/store")
+            .then()
+            .statusCode(201);
 
         Store store2 = new Store("Alpha Store");
         store2.quantityProductsInStock = 20;
-        store2.persist();
+        given()
+            .contentType(ContentType.JSON)
+            .body(store2)
+            .when()
+            .post("/store")
+            .then()
+            .statusCode(201);
 
         Store store3 = new Store("Beta Store");
         store3.quantityProductsInStock = 30;
-        store3.persist();
+        given()
+            .contentType(ContentType.JSON)
+            .body(store3)
+            .when()
+            .post("/store")
+            .then()
+            .statusCode(201);
 
         // when/then
         given()
@@ -207,21 +241,30 @@ public class StoreResourceTest {
      * - Response contains correct store data
      */
     @Test
-    @Transactional
     @DisplayName("GET /store/{id} - Successfully retrieve single store by ID")
     public void testGetSingleStore_ExistingId_ShouldReturnStore() {
-        // given
+        // given - create store via API
         Store store = new Store("Test Store");
         store.quantityProductsInStock = 100;
-        store.persist();
+
+        Long storeId = given()
+            .contentType(ContentType.JSON)
+            .body(store)
+            .when()
+            .post("/store")
+            .then()
+            .statusCode(201)
+            .extract()
+            .jsonPath()
+            .getLong("id");
 
         // when/then
         given()
             .when()
-            .get("/store/" + store.id)
+            .get("/store/" + storeId)
             .then()
             .statusCode(200)
-            .body("id", is(store.id.intValue()))
+            .body("id", is(storeId.intValue()))
             .body("name", is("Test Store"))
             .body("quantityProductsInStock", is(100));
     }
@@ -234,14 +277,22 @@ public class StoreResourceTest {
      * - Store no longer exists in database
      */
     @Test
-    @Transactional
     @DisplayName("DELETE /store/{id} - Successfully delete store")
     public void testDeleteStore_ExistingId_ShouldSucceed() {
-        // given
+        // given - create store via API
         Store store = new Store("To Be Deleted");
         store.quantityProductsInStock = 100;
-        store.persist();
-        Long storeId = store.id;
+
+        Long storeId = given()
+            .contentType(ContentType.JSON)
+            .body(store)
+            .when()
+            .post("/store")
+            .then()
+            .statusCode(201)
+            .extract()
+            .jsonPath()
+            .getLong("id");
 
         // when
         given()
